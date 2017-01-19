@@ -4,7 +4,7 @@
 Orbiwise is an IoT company that offers a full network software solution for LoRaWAN-based networks, which can scale to support millions of devices. Orbiwise's network server connects loRaWAN devices to the outside word, either through API exposed by the server or through packet propagation (invocation of callbacks registered at the server).
 
 ## Purpose of the connector
-The connector wraps the APIs that are exposed by the Orbiwise server and allow you to seamlessly communicate with your loRaWAN devices through the Orbiwiser server, as if they were objects of your scriptr.io applications.   
+The connector wraps the APIs that are exposed by the Orbiwise server and allows you to seamlessly communicate with your loRaWAN devices through the Orbiwiser server, as if they were objects of your scriptr.io applications.   
 
 ## Components
 - /orbiwiseserver: defines the OrbiwiseServer class that exposes all the methods you need to intereact with your devices
@@ -25,7 +25,7 @@ var password = "your_password";
 
 var callback = {
   
-  host: "https://electronica.scriptrapps.io", 
+  host: "https://api.scriptrapps.io", 
   port: 443,
   path_prefix: "/api/lora/update/rest/callback/payloads/ul",
   auth_string: "Bearer A_VALID_SCRIPTRIO_AUTH_TOKEN",
@@ -59,7 +59,18 @@ var payload = customOrbiswiserServer.getLatestPayload(deviceId);
 ```  
 var payloadList = customOrbiswiserServer.listPayloads(deviceId);
 ```
-#### Register callback to receive data updates
+#### Register callbacks to receive data updates
 The preceding methods allow you to explicitely ask for a device's latest payload. You can also register a callback to the Orbiwise server that will automatically forward updates to the given callback URL. The registerCallback method can be invoked without passing any parameter, which will make it use the value of the "callback" variable of the "./config" script. You can also choose to overwrite the default callback by providing a specific configuration and thus, register multiple different callbacks.
 ```
-
+var result = customOrbiwiseServer.registerCallback(); // option1, use default configuration
+// option 2, use specific callback 
+var callback = {
+  
+  host: "https://smartcity.scriptrapps.io", 
+  port: 443,
+  path_prefix: "/api/smartcity/rest/callback/payloads/ul",
+  auth_string: "Bearer A_VALID_SCRIPTRIO_AUTH_TOKEN",
+  retry_policy: 1
+};
+```
+**Note**: callback URLs should always end with "/rest/callback/payloads/ul" to cope with currrent Orbiwise's specifications 
