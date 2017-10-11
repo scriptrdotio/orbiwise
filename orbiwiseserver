@@ -8,18 +8,22 @@ var clientModule = require("./client");
  * @param {Object} config: configuration object, optional, defaults to the config script
  */
 function OrbiwiseServer(config) {
-  
-  this.config = {};
-  if (config) {
-    
-    for (var key in config) {
-      this.config[key] = config[key];
+
+    this.config = {};
+    if (config) {
+
+        for (var key in config) {
+            this.config[key] = config[key];
+        }
+
+        if (!this.config.orbiwiseUrl) {
+            this.config.orbiwiseUrl = configScript.orbiwiseUrl;
+        }
+    } else {
+        this.config = configScript;
     }
-  } else {
-      this.config = configScript;
-  }
-  
-  this.client = new clientModule.Client({username: this.username, password: this.password});
+
+    this.client = new clientModule.Client({username: this.username, password: this.password});
 }
 
 /**
@@ -35,28 +39,28 @@ function OrbiwiseServer(config) {
  * @throws {Error}
  */
 OrbiwiseServer.prototype.registerCallback = function(callback) {
-  
-  callback = callback ? callback : this.config.callback;
-  if (!callback || !callback.host || !callback.path_prefix) {
-    
-    throw {
-      
-      errorCode: "INVALID_PARAMETER",
-      errorDetail: "OrbiwiseServer.registerCallback: callback.host and callback.path_prefix cannot be null or empty"
+
+    callback = callback ? callback : this.config.callback; 
+    if (!callback || !callback.host || !callback.path_prefix) {
+
+        throw {
+
+            errorCode: "INVALID_PARAMETER",
+            errorDetail: "OrbiwiseServer.registerCallback: callback.host and callback.path_prefix cannot be null or empty"
+        };
+    }
+
+    var callbackClone = JSON.parse(JSON.stringify(callback));
+    callbackClone.retry_policy = callbackClone.retry_policy ? callbackClone.retry_policy : 1;
+
+    var instruction = {
+
+        url: this.config.orbiwiseUrl + "/rest/pushmode/start",
+        method: "PUT",
+        bodyString: JSON.stringify(callbackClone)
     };
-  }
-  
-  var callbackClone = JSON.parse(JSON.stringify(callback));
-  callbackClone.retry_policy = callbackClone.retry_policy ? callbackClone.retry_policy : 1;
-  
-  var instruction = {
-    
-    url: this.config.orbiwiseUrl + "/rest/pushmode/start",
-    method: "PUT",
-    bodyString: JSON.stringify(callbackClone)
-  };
-  
-  return this.client.callApi(instruction);
+
+    return this.client.callApi(instruction);
 };
 
 /**
@@ -66,18 +70,18 @@ OrbiwiseServer.prototype.registerCallback = function(callback) {
  * @throws {Error}
  */
 OrbiwiseServer.prototype.unregisterCallback = function() {
-    
-  var body = {
-    url: this.config.callback
-  };
-  
-  var instruction = {
-    
-    url: this.config.orbiwiseUrl + "/rest/pushmode/stop",
-    method: "PUT"
-  };
-  
-  return this.client.callApi(instruction);
+
+    var body = {
+        url: this.config.callback
+    };
+
+    var instruction = {
+
+        url: this.config.orbiwiseUrl + "/rest/pushmode/stop",
+        method: "PUT"
+    };
+
+    return this.client.callApi(instruction);
 };
 
 /**
@@ -86,23 +90,23 @@ OrbiwiseServer.prototype.unregisterCallback = function() {
  * @return {Object} device payload
  */
 OrbiwiseServer.prototype.getLatestPayload = function(deveui) {
-  
-  if (!deveui) {
-    
-    throw {
-      
-      errorCode: "INVALID_PARAMETER",
-      errorDetail: "OrbiwiseServer.getLatestPayload: deveui cannot be null or empty"
+
+    if (!deveui) {
+
+        throw {
+
+            errorCode: "INVALID_PARAMETER",
+            errorDetail: "OrbiwiseServer.getLatestPayload: deveui cannot be null or empty"
+        };
+    }
+
+    var instruction = {
+
+        url: this.config.orbiwiseUrl + "/rest/nodes/" + deveui + "/payloads/ul/latest",
+        method: "GET"
     };
-  }
-  
-  var instruction = {
-  
-    url: this.config.orbiwiseUrl + "/rest/nodes/" + deveui + "/payloads/ul/latest",
-    method: "GET"
-  };
-  
-  return this.client.callApi(instruction);
+
+    return this.client.callApi(instruction);
 };
 
 /**
@@ -112,23 +116,23 @@ OrbiwiseServer.prototype.getLatestPayload = function(deveui) {
  * @return {Array} device payloads
  */
 OrbiwiseServer.prototype.listPayloads = function(deveui) {
-  
-  if (!deveui) {
-    
-    throw {
-      
-      errorCode: "INVALID_PARAMETER",
-      errorDetail: "OrbiwiseServer.listPayloads: deveui cannot be null or empty"
+
+    if (!deveui) {
+
+        throw {
+
+            errorCode: "INVALID_PARAMETER",
+            errorDetail: "OrbiwiseServer.listPayloads: deveui cannot be null or empty"
+        };
+    }
+
+    var instruction = {
+
+        url: this.config.orbiwiseUrl + "/rest/nodes/" + deveui + "/payloads/ul",
+        method: "GET"
     };
-  }
-  
-  var instruction = {
-  
-    url: this.config.orbiwiseUrl + "/rest/nodes/" + deveui + "/payloads/ul",
-    method: "GET"
-  };
-  
-  return this.client.callApi(instruction);
+
+    return this.client.callApi(instruction);
 };
 
 /**
@@ -136,12 +140,12 @@ OrbiwiseServer.prototype.listPayloads = function(deveui) {
  * @return {Array} list of nodes
  */
 OrbiwiseServer.prototype.listNodes = function() {
-  
-  var instruction = {
 
-    url: this.config.orbiwiseUrl + "/rest/nodes",
-    method: "GET"
-  };
+    var instruction = {
 
-  return this.client.callApi(instruction);
+        url: this.config.orbiwiseUrl + "/rest/nodes",
+        method: "GET"
+    };
+
+    return this.client.callApi(instruction);
 };
