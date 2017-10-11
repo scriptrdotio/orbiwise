@@ -14,7 +14,7 @@ var password = "YOUR_ORBIWISE_PASSWORD";
  */
 var callback = {
   
-  host: "https://electronica.scriptrapps.io", 
+  host: "https://api.scriptrapps.io", 
   port: 443,
   path_prefix: "/api/lora/update/rest/callback/payloads/ul",
   auth_string: "Bearer A_SCRIPTR.IO_AUTH_TOKEN",
