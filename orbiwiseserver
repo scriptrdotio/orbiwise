@@ -23,7 +23,7 @@ function OrbiwiseServer(config) {
         this.config = configScript;
     }
 
-    this.client = new clientModule.Client({username: this.username, password: this.password});
+    this.client = new clientModule.Client({username: this.config.username, password: this.config.password});
 }
 
 /**
