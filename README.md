@@ -39,7 +39,7 @@ var callback = {
 
 The first thing to do is to create an instance of the Orbiwise Server. From a script, require the orbiwiseserver script then create an instance of the aforementioned class:
 ```
-var orbiwise = require("../modules/orbiwise/orbiwiseserver");
+var orbiwise = require("/modules/orbiwise/orbiwiseserver");
 // option 1: use the default configuration
 var defaultOrbiwiseServer = new orbiwise.OrbiwiseServer(); 
 // option 2: use the a custom configuration
