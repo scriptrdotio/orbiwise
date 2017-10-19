@@ -145,3 +145,50 @@ OrbiwiseServer.prototype.listNodes = function() {
 
     return this.client.callApi(instruction);
 };
+
+/**
+ * Send downlink data to the device throgh the Orbiwiser platfrom
+ * @function sendData
+ * @param {Object} [dto]
+ * @param {String} [dto.port] : optional, device port, defaults to 1
+ * @param {String} [dto.fcnt]: otpional, name of decryption function
+ * @param {String} [dto.confirmed]: optional, send true if you need the device to confirm reception of the message
+ * @return {Object}
+ */
+OrbiwiseServer.prototype.sendData = function(dto) {
+
+    if (!dto || !dto.payload || !dto.deveui) {
+        
+        throw {
+
+            errorCode: "INVALID_PARAMETER",
+            errorDetail: "OrbiwiseServer.sendData: dto.payload and dto.deveui cannot be null or empty"
+        };
+    }
+    
+    var url = this.config.orbiwiseUrl + "/rest/nodes/" + dto.deveui + "/payloads/dl";
+    var addPort = dto.port ? "port=" + dto.port : "port=1";
+    var addFcnt = dto.fcnt ? "fcnt=" +  dto.fcnt : "";
+    var addConfirmed = (dto.confirmed == true || dto.confirmed == false) ? "confimed=" + dto.confirmed : "";
+    if (addPort) {
+        url += "?"+ addPort;
+    }
+
+    if (addFcnt) {
+        url += (url.indexOf("?") > -1) ? ("&" + addFcnt) : ("?" + addFcnt);
+    }
+
+    if (addConfirmed) {
+        url += (url.indexOf("?") > -1) ? ("&" + addConfirmed) : ("?" + addConfirmed);
+    }
+
+
+    var instruction = {
+
+        url: url,
+        method: "POST",
+        params: btoa(dto.payload)
+    };
+
+    return this.client.callApi(instruction);
+};
