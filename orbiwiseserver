@@ -64,16 +64,12 @@ OrbiwiseServer.prototype.registerCallback = function(callback) {
 };
 
 /**
- * Unregister a callback url from the Orbiwise server to stop receiving updates sent by device
- * @function unregisterCallback
+ * Unregister callbacks from the Orbiwise server to stop receiving updates sent by devices
+ * @function unregisterCallbacks
  * @return 
  * @throws {Error}
  */
-OrbiwiseServer.prototype.unregisterCallback = function() {
-
-    var body = {
-        url: this.config.callback
-    };
+OrbiwiseServer.prototype.unregisterCallbacks = function(callback) {
 
     var instruction = {
 
