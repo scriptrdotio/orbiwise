@@ -16,7 +16,7 @@ The connector wraps the APIs that are exposed by the Orbiwise server and allows 
 You can configure your application in the connector using the "/config" file:
 - Specfify the URL of the Orbiwiser server using the "orbiwiseUrl" variable,
 - Specify your Orbiwise credentials using the "username" and "password" variables. These will be used by default if no credentials ae passed to the OrbiwiseServer constructor (see below). 
-- You can use the default value for the callback URL. If you have subscribed to the Orbiwise automatic packet forwading option (see below), this URL is automatically invoked by the Orbiwise server whenever updated data is available. Not that this value will also be used by default if no alternative configuration is passed to the OrbiwiseSerer constructor.
+- You can use the default value for the callback URL. If you have subscribed to the Orbiwise automatic packet forwading option (see below), this URL is automatically invoked by the Orbiwise server whenever updated data is available. Note that this value will also be used by default if no alternative configuration is passed to the OrbiwiseSerer constructor.
 ```
 var orbiwiseUrl = "The URL of the Orbiwise server";
 
@@ -27,7 +27,7 @@ var callback = {
   
   host: "https://api.scriptrapps.io", 
   port: 443,
-  path_prefix: "/api/lora/update/rest/callback/payloads/ul",
+  path_prefix: "/modules/orbiwise/webhooks", // NOTE: THIS IS A PREFIX. 
   auth_string: "Bearer A_VALID_SCRIPTRIO_AUTH_TOKEN",
   retry_policy: 1
 };
@@ -68,7 +68,7 @@ var callback = {
   
   host: "https://smartcity.scriptrapps.io", 
   port: 443,
-  path_prefix: "/api/smartcity/rest/callback/payloads/ul",
+  path_prefix: "/myapplication/webhooks", // NOTE: THIS IS A PREFIX
   auth_string: "Bearer A_VALID_SCRIPTRIO_AUTH_TOKEN",
   retry_policy: 1
 };
@@ -76,7 +76,12 @@ var callback = {
 result = customOrbiwiseServer.registerCallback(callback);
 ```
 **Note**: 
-- Callback URLs should always end with "/rest/callback/payloads/ul" to cope with currrent Orbiwise's specifications 
+- Callback URLs specification set by Orbiwise to send different data are as follow:
+ - *path_prefix*/rest/callback/payloads/ul (new device data)
+ - *path_prefix*/rest/callback/payloads/dl (notification that downlink data sent to device was received)
+ - *path_prefix*/rest/callback/nodeinfo (updates on the node)
+ - *path_prefix*/rest/callback/joininfo (node joined upates)
+ - *path_prefix*/rest/callback/status (node status updates)
 - You can only register one callback at a time. Therefore, invoking twice the registerCallback() method with different callback URL and configuration ends up only registering the second callback configuration
 
 ### Un-register a callback
