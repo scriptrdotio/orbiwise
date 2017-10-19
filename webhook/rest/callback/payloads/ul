@@ -1,0 +1,27 @@
+/**
+ * Default script that receives payloads sent by devices, assuming the default callback was subscribed to Orbiwise
+ * The message body will be as follows (below are sample data)::
+ * {
+ *  "deveui": "hex", // DevEUI of source node
+ *  "dataFrame": "AB==", // raw (encrypted) payload in base64 format
+ *  "port": 1, // MAC port the message was receive on
+ *  "timestamp": "2015-02-11T10:33:00.578Z", // time of reception in GMT
+ *  "fcnt": 138, // uplink fcnt (needed for decryption)
+ *  "rssi": -111, // RSSI from gateway
+ *  "snr": -6, // SNR from gateway
+ *  "sf_used": “8”, // used spreading factor
+ *  "id": 278998, // unique identifier (64-bit) of payload.
+ *  "live": true, // indicate if the message is live, or
+ *  // resent from the temporary storage
+ *  "decrypted":false // set true if the DASS decrypted the payload,
+ *  // false if the message is still encrypted.
+ *  "gtw_info": [ // see note below.
+ *   {gtw_id: "0000000012340000", rssi: -100, snr: 5 },
+ *   {gtw_id: "0000000012350000", rssi: -90, snr: 15 }, …
+ *  ]
+ * }
+ */
+
+var log = require("log"); log.setLevel("info");
+
+log.info("Callback received the following data\n " + JSON.stringify(request.body));
