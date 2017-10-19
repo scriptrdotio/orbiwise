@@ -16,7 +16,7 @@ var callback = {
   
   host: "https://api.scriptrapps.io", 
   port: 443,
-  path_prefix: "/api/lora/update/rest/callback/payloads/ul",
+  path_prefix: "/modules/orbiwise/webhook",
   auth_string: "Bearer A_SCRIPTR.IO_AUTH_TOKEN",
   retry_policy: 1
 };
