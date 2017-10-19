@@ -1,0 +1,15 @@
+/**
+ * Default script that receives notification of successfuly sending downlink data to the device, assuming the default callback was subscribed to Orbiwise
+ * Message body will be as follows (below are sample data)::
+ * {
+ *  "deveui": "hex", // DevEUI of the receiving node
+ *  "id": 252, // unique ID of the dl payload
+ *  "data": "ABC=", // the payload data sent
+ *  "fcnt": 10, // the used downlink fcnt
+ *  "port": 1, // the used port
+ *  "transmissionStatus": 0 // see table in section 4.4.5
+ *  }
+ */
+var log = require("log"); log.setLevel("info");
+
+log.info("Callback received the following notification\n " + JSON.stringify(request.body));
