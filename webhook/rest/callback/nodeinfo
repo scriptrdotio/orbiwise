@@ -1,0 +1,19 @@
+/**
+ * Default script that receives notification of a node update, assuming the default callback was subscribed to Orbiwise
+ * Message body will be as follows (below are sample data)::
+ * {
+ *  "deveui": "hex", // DevEUI of source node
+ *  "device_status": 3, // status of device, see section 4.3.2
+ *  "last_reception": "timestamp", // time when node was last seen in GMT
+ *  "dl_fcnt": 45, // last used downlink fcnt
+ *  "device_class": 0, // 0: class A, 1: class B, 2: class C
+ *  "registration_status": 1, // registration status, see section 4.3.2
+ *  "expiry_time_uplink": 168, // ul payload expiry time in hours
+ *  "expiry_time_downlink": 168 // dl payload expiry time in hours
+ * }
+ */
+
+var log = require("log"); log.setLevel("info");
+
+log.info("Callback received the following node info update\n " + JSON.stringify(request.body));
+
