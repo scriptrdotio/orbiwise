@@ -1,5 +1,6 @@
 var config = require("./config");
 var http = require("http");
+var log = require("log"); log.setLevel("info");
 
 /**
  * A generic http client that handles the communication with remote APIs
@@ -28,34 +29,15 @@ Client.prototype.callApi = function(params) {
   try {   
      return this._callApi(params);
   }catch(response) {
-    
-    if (response.status == "401" && response.body.indexOf("expired") > -1) {
-    
-      //this._refreshToken();
-      try {
-        return this._callApi(params);
-      }catch(response) {
-        this._handleError(response);
-      }
-    }else {
       this._handleError(response);
-    }    
   }
 };
 
 Client.prototype._callApi = function(params) {
-  
-  if (params.params) {
-    params.params = this._paramsToString(params.params);
-  }
-  
-  if (params.params && (!params.method || params.method == "GET")) {
-    params.params = this._paramsToString(params.params);
-  }
-  
+   
   if (params.params && (params.method == "POST" || params.method == "PUT")) {
-    
-    params.bodyString = JSON.stringify(params.params);
+   
+    params.bodyString = typeof(params.params) == "string" ? params.params : JSON.stringify(params.params);
     delete params.params;
   }
   
@@ -65,9 +47,9 @@ Client.prototype._callApi = function(params) {
     "Authorization": "Basic " + btoa(this.username + ":" + this.password)
   };
   
-  console.log(JSON.stringify(params));
+  log.info("Sending the following request: " + JSON.stringify(params));
   var response = http.request(params);
-  console.log("Received following response  : " + JSON.stringify(response));
+  //log.info("Received following response: " + JSON.stringify(response));
   if (response.status >= "200" && response.status < "300") {
     
     var responseBody = "";
@@ -114,22 +96,3 @@ Client.prototype._handleError = function(response) {
     "errorDetail": errorObj
   };
 };
-
-/*
- * Transform all Numeric and boolean parameters to string so they can be passed to http.callApi
- * (shallow only)
- */
-Client.prototype._paramsToString = function(params) {
-  
-  var newParams = {};
-  for (var p in params) {
-    
-    if (typeof(params[p]) != "object") {
-    	newParams[p] = "" +  params[p];
-    }else {
-      newParams[p] = params[p];
-    }
-  }
-  
-  return newParams;
-};			
