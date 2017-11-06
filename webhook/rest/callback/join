@@ -26,5 +26,5 @@
 
 var log = require("log"); log.setLevel("info");
 
-log.info("Callback received the following node join update\n " + JSON.stringify(request.body));
+log.info("Callback received the following node join request\n " + JSON.stringify(request.body));
 
