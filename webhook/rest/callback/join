@@ -1,0 +1,30 @@
+/**
+ * Default script that receives join requests.
+ * Join should implement a LoRa-WAN specified process. The below is extracted from Orbiwise documentation
+ * When a device is registering on the Orbiwise Data Access Server (DASS) using the JOIN procedure and the AppKey is NOT provided
+ * to the latter, the server will forward the JOIN request to the application for it to authenticate, generate
+ * keys and encrypt the join accept message.
+ * The join procedure has real time constraints and the application must answer back to the DASS within <3 seconds
+ * 
+ * @param {Object} // body of the request
+ * {
+ *  "deveui": hex, DevEUI (8 bytes) of source node
+ *  "appeui": hex, AppEUI (8 bytes) of source node
+ *  "join_request": base64, raw join request message from node
+ *  "join_accept": base64 unencrypted join accept message to be encrypted
+ * }
+ * @return {
+ *  "deveui": hex, DevEUI (8 bytes) of source node
+ *  "join_accept": base64, encrypted join accept message to send back to the joining node
+ *  "nwkskey": hex, Generate network session key (16-bytes)
+ * }
+ * NOTE: HTTP status to return
+ * 200: The join request MIC is ok and a valid join accept message and nwkskey is available in the JSON message body.
+ * 403: The DevEUI is not known and this node is not allowed to join
+ * 406: The DevEUI is known, but the MIC check failed.
+ */
+
+var log = require("log"); log.setLevel("info");
+
+log.info("Callback received the following node join update\n " + JSON.stringify(request.body));
+
