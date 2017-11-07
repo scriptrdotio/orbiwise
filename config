@@ -20,3 +20,9 @@ var callback = {
   auth_string: "Bearer A_SCRIPTR.IO_AUTH_TOKEN",
   retry_policy: 1
 };
+
+/**
+ * Set the below to true in order to return 203 response when in PUSH mode (Orbiwise sending data to scriptr.io) 
+ * Returning 202 will prevent the obiwise server to through the data and will keep it for further reuse
+ */
+var return202OnCallback = true;
