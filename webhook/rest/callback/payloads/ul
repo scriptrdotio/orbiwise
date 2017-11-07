@@ -23,5 +23,21 @@
  */
 
 var log = require("log"); log.setLevel("info");
+var config = require("../../../../config");
 
 log.info("Callback received the following data\n " + JSON.stringify(request.body));
+
+/**
+ * It is recommanded that you add the below to your actual callback script
+ */
+if (config.return202OnCallback) {
+    
+    response.addHeaders({
+    	"Access-Control-Allow-Origin":"*"
+    });
+    
+    response.setStatus(202);
+    response.flush();
+    response.close();
+}else 
+    return;
