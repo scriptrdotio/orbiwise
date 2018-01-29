@@ -84,6 +84,7 @@ OrbiwiseServer.prototype.unregisterCallbacks = function(callback) {
  * @function getLatestPayload
  * @param {String} target device deveui (id)
  * @return {Object} device payload
+ * @throw {Error}
  */
 OrbiwiseServer.prototype.getLatestPayload = function(deveui) {
 
@@ -110,6 +111,7 @@ OrbiwiseServer.prototype.getLatestPayload = function(deveui) {
  * @function listPayloads
  * @param {String} target device deveui (id)
  * @return {Array} device payloads
+ * @throw {Error}
  */
 OrbiwiseServer.prototype.listPayloads = function(deveui) {
 
@@ -132,15 +134,57 @@ OrbiwiseServer.prototype.listPayloads = function(deveui) {
 };
 
 /**
- * @function listNodes
- * @return {Array} list of nodes
+ * @function checkDownlinkPayloadStatus
+ * @param {Object} [dto]
+ * @param {String} [dto.deveui]: target device deveui (id)
+ * @param {String} [dto.msgid]: downlink msg id
+ * @return {Object}
+ * @throw {Error}
  */
-OrbiwiseServer.prototype.listNodes = function() {
+OrbiwiseServer.prototype.checkDownlinkPayloadStatus = function(dto) {
+
+    if (!dto || !dto.deveui || !dto.msgid) {
+
+        throw {
+
+            errorCode: "Missing_Parameter",
+            errorDetail: "OrbiwiseServer.checkDownlinkPayloadStatus: dto.devui and dto.msgid cannot be null or empty"
+        };
+    }
 
     var instruction = {
 
-        url: this.config.orbiwiseUrl + "/rest/nodes",
+        url: this.config.orbiwiseUrl + "/rest/nodes/" + dto.deveui + "/payloads/dl/" + dto.msgid,
         method: "GET"
+    };
+
+    return this.client.callApi(instruction);
+};
+
+
+/**
+ * @function deleteDownlinkPayload
+ * @param {Object} [dto]
+ * @param {String} [dto.deveui]: target device deveui (id)
+ * @param {String} [dto.msgid]: downlink msg id
+ * @return {String} "OK" if successful
+ * @throw {Error}
+ */
+OrbiwiseServer.prototype.deleteDownlinkPayload = function(dto) {
+
+    if (!dto || !dto.deveui || !dto.msgid) {
+
+        throw {
+
+            errorCode: "Missing_Parameter",
+            errorDetail: "OrbiwiseServer.deleteDownlinkPayload: dto.devui and dto.msgid cannot be null or empty"
+        };
+    }
+
+    var instruction = {
+
+        url: this.config.orbiwiseUrl + "/rest/nodes/" + dto.deveui + "/payloads/dl/" + dto.msgid,
+        method: "DELETE"
     };
 
     return this.client.callApi(instruction);
@@ -154,18 +198,19 @@ OrbiwiseServer.prototype.listNodes = function() {
  * @param {String} [dto.fcnt]: otpional, name of decryption function
  * @param {String} [dto.confirmed]: optional, send true if you need the device to confirm reception of the message
  * @return {Object}
+ * @throw {Error}
  */
 OrbiwiseServer.prototype.sendData = function(dto) {
 
     if (!dto || !dto.payload || !dto.deveui) {
-        
+
         throw {
 
             errorCode: "INVALID_PARAMETER",
             errorDetail: "OrbiwiseServer.sendData: dto.payload and dto.deveui cannot be null or empty"
         };
     }
-    
+
     var url = this.config.orbiwiseUrl + "/rest/nodes/" + dto.deveui + "/payloads/dl";
     var addPort = dto.port ? "port=" + dto.port : "port=1";
     var addFcnt = dto.fcnt ? "fcnt=" +  dto.fcnt : "";
@@ -188,6 +233,47 @@ OrbiwiseServer.prototype.sendData = function(dto) {
         url: url,
         method: "POST",
         params: btoa(dto.payload)
+    };
+
+    return this.client.callApi(instruction);
+};
+
+/**
+ * @function listNodes
+ * @return {Array} list of nodes
+ * @throw {Error}
+ */
+OrbiwiseServer.prototype.listNodes = function() {
+
+    var instruction = {
+
+        url: this.config.orbiwiseUrl + "/rest/nodes",
+        method: "GET"
+    };
+
+    return this.client.callApi(instruction);
+};
+
+/**
+ * @function getNode
+ * @return {Object} data of a single node
+ * @throw {Error}
+ */
+OrbiwiseServer.prototype.getNode = function(deveui) {
+
+    if (!deveui) {
+
+        throw {
+
+            errorCode: "INVALID_PARAMETER",
+            errorDetail: "OrbiwiseServer.getNode: deveui cannot be null or empty"
+        };
+    }
+    
+    var instruction = {
+
+        url: this.config.orbiwiseUrl + "/rest/nodes/" + deveui,
+        method: "GET"
     };
 
     return this.client.callApi(instruction);
