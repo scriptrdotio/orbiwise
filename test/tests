@@ -1,0 +1,146 @@
+var orbiwiseModule = require("../orbiwiseserver");
+try {
+    
+    /*
+     * Configuration of the orbiwise connector
+     */
+    var config = {
+        
+        orbiwiseUrl: "<orbiwise_server_url>",
+		username: "<USERNAME>",
+		password: "<PASSWORD>",
+        callback: {
+  
+  			host: "https://api.scriptrapps.io", 
+  			port: 443,
+  			path_prefix: "/modules/orbiwise/webhook",
+  			auth_string: "Bearer SCRIPTR.IO_TOKEN",
+  			retry_policy: 1
+		},
+        return202OnCallback: true
+    };
+
+    /*
+     * Initialization
+     */
+    var orbiwise = new orbiwiseModule.OrbiwiseServer(config);
+    var payload = "01010101";
+    var sendDownlinkMsgResult = null;
+    var device = "SOME_DEVICE_ID;
+    var payloadid = ""; // use this variable to specify a downlink payload id of your choice
+    
+    /*
+     * Send downling payload to device through orbiwise
+     */
+    try {
+        
+        sendDownlinkMsgResult = orbiwise.sendData({payload:payload, deveui: device});
+        if (!sendDownlinkMsgResult) {
+            console.log("orbiwise.sendData() failed by returning null");
+        }else {
+            console.log("send msg result: " + JSON.stringify(sendDownlinkMsgResult));
+        }       
+    }catch(exception) {
+        console.log("orbiwise.sendData() failed\n" + JSON.stringify(exception));
+    }
+   
+    /*
+     * check downling msg status
+     */    
+    var msgid = payloadid ? payloadid : sendDownlinkMsgResult.id;
+    if ((sendDownlinkMsgResult && sendDownlinkMsgResult.confirmed) || msgid){
+        
+        try {
+            
+            var status = orbiwise.checkDownlinkPayloadStatus({deveui: device, msgid: sendDownlinkMsgResult.id});            
+            console.log("check downlink payload status:  "+ JSON.stringify(status));
+        }catch(exception){
+            console.log("orbiwise.sendData() failed\n" + JSON.stringify(exception));
+        }
+    }
+    
+    /*
+     * Delete downlink payload on orbiwise
+     */
+    var msgid = payloadid ? payloadid : sendDownlinkMsgResult.id;
+    if ((sendDownlinkMsgResult && sendDownlinkMsgResult.confirmed) || msgid) {
+        
+        try {
+            
+            var status = orbiwise.deleteDownlinkPayload({deveui: device, msgid: msgid});            
+            console.log("delete downlink payload:  "+ JSON.stringify(status));
+        }catch(exception){
+            console.log("orbiwise.deleteDownlinkPayload() failed\n" + JSON.stringify(exception));
+        }        
+    }
+    
+    /*
+     * List nodes
+     */
+    try {
+        
+        var nodeList = orbiwise.listNodes();
+        console.log("node list: " + JSON.stringify(nodeList));
+    }catch(exception){
+        console.log("orbiwise.listNodes() failed\n" + JSON.stringify(exception));
+    }  
+    
+    /*
+     * get node
+     */
+    try {
+        
+        var node = orbiwise.getNode(device);
+        console.log("node: " + JSON.stringify(node));
+    }catch(exception){
+        console.log("orbiwise.getNode() failed\n" + JSON.stringify(exception));
+    }  
+ 
+    /*
+     * List listPayloads (uplink)
+     */
+    try {
+        
+        var payloadList = orbiwise.listPayloads(device);
+        console.log("payload list: " + JSON.stringify(payloadList));
+    }catch(exception){
+        console.log("orbiwise.listPayloads() failed\n" + JSON.stringify(exception));
+    } 
+    
+    /*
+     * get latest payload (uplink)
+     */
+    try {
+        
+        var payload = orbiwise.getLatestPayload(device);
+        console.log("payload: " + JSON.stringify(payload));
+    }catch(exception){
+        console.log("orbiwise.getLatestPayload() failed\n" + JSON.stringify(exception));
+    } 
+    
+    /*
+     * Register callback
+     */
+    try {
+        
+       // var registerResult = orbiwise.registerCallback();
+       // console.log("register result: " + JSON.stringify(registerResult));
+    }catch(exception){
+        console.log("orbiwise.registerCallback() failed\n" + JSON.stringify(exception));
+    } 
+    
+    /*
+     * Unregister callback
+     */
+    try {
+        
+       // var unregisterResult = orbiwise.unregisterCallbacks();
+       // console.log("unregister result: " + JSON.stringify(unregisterResult));
+    }catch(exception){
+        console.log("orbiwise.unregisterCallbacks() failed\n" + JSON.stringify(exception));
+    } 
+    
+    return "done";
+}catch(exception){
+    return exception;
+}
