@@ -17,7 +17,7 @@ The connector wraps the APIs that are exposed by the Orbiwise server and allows 
 You can configure your application in the connector using the "/config" file:
 - Specfify the URL of the Orbiwiser server using the "orbiwiseUrl" variable,
 - Specify your Orbiwise credentials using the "username" and "password" variables. These will be used by default if no credentials ae passed to the OrbiwiseServer constructor (see below). 
-- You can use the default value for the callback URL. If you have subscribed to the Orbiwise automatic packet forwading option (see below), this URL is automatically invoked by the Orbiwise server whenever updated data is available. Note that this value will also be used by default if no alternative configuration is passed to the OrbiwiseSerer constructor.
+- You can use the default value for the callback URL. If you have opted for the Orbiwise automatic packet forwading option (see below), this URL is automatically invoked by the Orbiwise server whenever updated data is available. Note that this value will also be used by default if no alternative configuration is passed to the OrbiwiseSerer constructor.
 ```
 var orbiwiseUrl = "The URL of the Orbiwise server";
 
