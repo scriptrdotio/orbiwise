@@ -9,7 +9,8 @@ The connector wraps the APIs that are exposed by the Orbiwise server and allows 
 ## Components
 - /orbiwiseserver: defines the OrbiwiseServer class that exposes all the methods you need to intereact with your devices
 - /client: a generic HTTP client that handles the communication with the Orbiwise server
-- /config: the configuration script, where to specify the URL of your Orbiwise server, your Orbiwise credentials and your callbacks.
+- /config: the configuration script, where to specify the URL of your Orbiwise server, your Orbiwise credentials and your callbacks
+- /webhook/rest/callback: base folder containing the scripts that are invoked by the Orbiwise server when subscribing a callback
 
 ## Configuring the connector
 
